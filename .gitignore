@@ -174,3 +174,8 @@ installer_files/
 logs/
 videolingo_*.log
 .tools/
+
+# SAP video translate — local secrets & generated artifacts
+sap_video_cookies.txt
+artifacts/
+.playwright-mcp/

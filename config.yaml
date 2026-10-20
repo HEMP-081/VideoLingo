@@ -12,22 +12,22 @@ display_language: "zh-CN"
 # API settings
 api:
   key: 'YOUR_API_KEY'
-  base_url: 'https://api.openlux.ai/v1'
-  model: 'gpt-6-luna'
-  llm_support_json: false
+  base_url: 'http://localhost:6655/openai/v1'
+  model: 'gpt-4.1'
+  llm_support_json: true
 # *Number of LLM multi-threaded accesses, set to 1 if using local LLM
 max_workers: 4
 
 # Language settings, written into the prompt, can be described in natural language
-target_language: '简体中文'
+target_language: 'English'
 
 # Whether to use Demucs for vocal separation before transcription
 demucs: false
 
 whisper:
   # Recognition language ISO 639-1, or "auto"
-  language: 'en'
-  detected_language: 'en'
+  language: 'auto'
+  detected_language: 'de'
   # Recognition runtime: "local" (default), "elevenlabs" or "mai" (MAI-Transcribe-2).
   runtime: 'local'
   # Local ASR backend: "qwen" (default: Qwen3-ASR + Qwen3-ForcedAligner-0.6B) or "whisperx".
@@ -61,7 +61,7 @@ ffmpeg_gpu: false
 
 # *Youtube settings
 youtube:
-  cookies_path: ''
+  cookies_path: 'sap_video_cookies.txt'
 
 # *Default resolution for downloading YouTube videos [360, 1080, best]
 ytb_resolution: '1080'

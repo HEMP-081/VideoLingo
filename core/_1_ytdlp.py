@@ -34,8 +34,23 @@ def needs_cookies(error):
     message = str(error).lower()
     return any(hint in message for hint in ("sign in to confirm", "--cookies", "login required"))
 
+def normalize_sap_url(url):
+    """Rewrite video.sap.com playlist URLs to the /media/t/{entryId} form that
+    yt-dlp's Kaltura extractor accepts. SAP hands out both /media/t/{entryId}
+    (supported directly) and /playlist/dedicated/.../{entryId} (rejected as
+    "Unsupported URL"); the Kaltura entry id is always the last path segment.
+    Other URLs are returned unchanged.
+    """
+    if 'video.sap.com' not in url:
+        return url
+    match = re.search(r'/playlist/dedicated/[^?#]*/(1_[0-9a-z]+)', url)
+    if match:
+        return f'https://video.sap.com/media/t/{match.group(1)}'
+    return url
+
 def download_video_ytdlp(url, save_path='output', resolution='1080'):
     os.makedirs(save_path, exist_ok=True)
+    url = normalize_sap_url(url)
     ydl_opts = {
         'format': 'bestvideo+bestaudio/best' if resolution == 'best' else f'bestvideo[height<={resolution}]+bestaudio/best[height<={resolution}]',
         'outtmpl': f'{save_path}/%(title)s.%(ext)s',
@@ -60,6 +75,12 @@ def download_video_ytdlp(url, save_path='output', resolution='1080'):
         if not os.path.isfile(cookies_path):
             raise ValueError(f"Cookies file not found: {cookies_path}")
         ydl_opts["cookiefile"] = cookies_path
+
+    # SAP internal videos (video.sap.com) are served via Kaltura; a Referer
+    # keeps the m3u8 fallback stable. Scoped to SAP URLs so other sites (e.g.
+    # YouTube) are unaffected.
+    if 'video.sap.com' in url:
+        ydl_opts['http_headers'] = {'Referer': 'https://video.sap.com/'}
 
     # Get YoutubeDL class after updating
     YoutubeDL = update_ytdlp()

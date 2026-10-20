@@ -133,7 +133,7 @@ def download_video_section():
 
         col1, col2 = st.columns([3, 1])
         with col1:
-            url = st.text_input(t("Enter YouTube link:"))
+            url = st.text_input(t("Enter video link (YouTube / SAP video.sap.com):"))
         with col2:
             res_dict = {
                 "360p": "360",
@@ -150,7 +150,7 @@ def download_video_section():
                 t("Cookies Path"),
                 value=load_key("youtube.cookies_path") or "",
                 placeholder="cookies.txt",
-                help=t("Path of a cookies.txt file exported from your browser, for videos that require sign-in"),
+                help=t("Path of a cookies.txt file exported from your browser, for videos that require sign-in. For SAP internal videos fill in sap_video_cookies.txt"),
             )
             if cookies_path != (load_key("youtube.cookies_path") or ""):
                 update_key("youtube.cookies_path", cookies_path)
